@@ -5,10 +5,13 @@ using Cinemachine;
 
 public class CameraMoving : CoreMonoBehaviour
 {
-    [SerializeField] public CinemachineVirtualCamera mainCamera;
+    [SerializeField] public Camera mainCamera;
+    [SerializeField] public CinemachineVirtualCamera cinemachineCamera;
+    [SerializeField] public CinemachineConfiner2D cameraConfiner2D;
     [SerializeField] public Transform startPoint;
     [SerializeField] public Transform stopPoint;
     [SerializeField] public Transform cameraAlternativeFollow;
+    [SerializeField] public List<Transform> backgrounds;
     [SerializeField] protected Transform player;
     public Transform Player => player;
     [SerializeField] protected bool isChangingLocation = false;
@@ -18,17 +21,34 @@ public class CameraMoving : CoreMonoBehaviour
     protected override void LoadComponent()
     {
         base.LoadComponent();
-        this.LoadCamera();
+        this.LoadMainCamera();
+        this.LoadCinemachineCamera();
+        this.LoadCinemachineConfiner2D();
         this.LoadPoints();
         this.LoadAlternativeFollow();
         this.LoadPlayer();
+        this.LoadBackgrounds();
     }
 
-    protected virtual void LoadCamera()
+    protected virtual void LoadMainCamera()
     {
         if (this.mainCamera != null) return;
-        this.mainCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        this.mainCamera = Camera.main;
+        Debug.LogWarning(transform.name + ": Load Main Camera", gameObject);
+    }
+
+    protected virtual void LoadCinemachineCamera()
+    {
+        if (this.cinemachineCamera != null) return;
+        this.cinemachineCamera = FindObjectOfType<CinemachineVirtualCamera>();
         Debug.LogWarning(transform.name + ": Load Camera", gameObject);
+    }
+
+    protected virtual void LoadCinemachineConfiner2D()
+    {
+        if (this.cameraConfiner2D != null) return;
+        this.cameraConfiner2D = this.cinemachineCamera.GetComponent<CinemachineConfiner2D>();
+        Debug.LogWarning(transform.name + ": Load Cinemachine Confiner 2D", gameObject);
     }
 
     protected virtual void LoadPoints()
@@ -55,9 +75,20 @@ public class CameraMoving : CoreMonoBehaviour
         Debug.LogWarning(transform.name + ": Load Player", gameObject);
     }
 
+    protected virtual void LoadBackgrounds()
+    {
+        if (this.backgrounds.Count > 0) return;
+        Transform transform = GameObject.Find("Backgrounds").transform;
+        foreach (Transform child in transform)
+        {
+            this.backgrounds.Add(child);
+        }
+        Debug.LogWarning(base.transform.name + ": Load Backgrounds", gameObject);
+    }
+
     protected override void Start()
     {
-        this.cameraAlternativeFollow.position = this.player.position;
+        this.SetupInitialCamera();
     }
 
     protected virtual void FixedUpdate()
@@ -65,11 +96,29 @@ public class CameraMoving : CoreMonoBehaviour
         if (!this.isChangingLocation && !CharManager.Instance._charStats.inInvincibleState) this.cameraAlternativeFollow.position = this.player.position;
     }
 
+    public virtual void SetCamFollowPlayer()
+    {
+        this.cameraAlternativeFollow.position = this.player.position;
+    }
+
+    protected virtual void SetupInitialCamera()
+    {
+        this.cameraAlternativeFollow.position = this.player.position;
+        this.cameraConfiner2D.m_BoundingShape2D = this.backgrounds[0].GetComponent<PolygonCollider2D>();
+    }
+
+    public virtual void ChangeCameraConfiner(int index)
+    {
+        if (index < 0 || index >= this.backgrounds.Count) return;
+        this.cameraConfiner2D.m_BoundingShape2D = this.backgrounds[index].GetComponent<PolygonCollider2D>();
+    }
+
     public IEnumerator MoveCamera(float time)
     {
         this.isChangingLocation = true;
-        this.mainCamera.Follow = this.cameraAlternativeFollow;
-        this.mainCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_DeadZoneWidth = 0;
+        this.cameraAlternativeFollow.position = this.startPoint.position;
+        this.cinemachineCamera.Follow = this.cameraAlternativeFollow;
+        this.cinemachineCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_DeadZoneWidth = 0;
         this.player.GetComponent<CharController>().DisableController();
         float distance = Vector3.Distance(this.cameraAlternativeFollow.position, stopPoint.position);
         while (distance > 0.05f)

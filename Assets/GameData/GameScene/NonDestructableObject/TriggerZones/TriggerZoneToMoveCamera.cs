@@ -46,7 +46,7 @@ public class TriggerZoneToMoveCamera : CoreMonoBehaviour
     public virtual void LockCamInXAxis()
     {
         if (this.cameraMoving.IsChangingLocation) return;
-        this.cameraMoving.mainCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_DeadZoneWidth = 2;
-        this.cameraMoving.mainCamera.Follow = CharManager.Instance.transform;
+        this.cameraMoving.cinemachineCamera.GetCinemachineComponent<CinemachineFramingTransposer>().m_DeadZoneWidth = 2;
+        //this.cameraMoving.mainCamera.Follow = CharManager.Instance.transform;
     }
 }

@@ -94,13 +94,14 @@ public class CharStats : CoreMonoBehaviour
         CharManager.Instance._charSpriteRenderer.color = new Color(1, 1, 1, 1);
         this.transform.parent.position = this.savePointCtrl.CurrentSavePoint.transform.position;
 
-        this.cameraMoving.startPoint.position = this.cameraMoving.mainCamera.transform.position;
-        this.cameraMoving.stopPoint.position = new Vector3(this.savePointCtrl.CurrentSavePoint.transform.position.x, this.savePointCtrl.CurrentSavePoint.transform.position.y, -10);
+        this.cameraMoving.startPoint.position = new Vector3(this.cameraMoving.mainCamera.transform.position.x, this.cameraMoving.mainCamera.transform.position.y, 0);
+        this.cameraMoving.stopPoint.position = this.savePointCtrl.CurrentSavePoint.transform.position;
         StartCoroutine(this.cameraMoving.MoveCamera(2f));
+        this.cameraMoving.ChangeCameraConfiner(0);
 
         yield return new WaitUntil(() => !this.cameraMoving.IsChangingLocation);
         Debug.Log("Resurrect Complete");
-        this.cameraMoving.mainCamera.Follow = this.transform.parent;
+        this.cameraMoving.cinemachineCamera.Follow = this.transform.parent;
         this.isDefeated = false;
         this.charController.isDisableController = false;
         yield return new WaitForSeconds(1f);

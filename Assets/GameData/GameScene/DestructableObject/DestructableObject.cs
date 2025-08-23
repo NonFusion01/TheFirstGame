@@ -44,12 +44,10 @@ public class DestructableObject : CoreMonoBehaviour
 
     protected IEnumerator TakeDamageOnScene()
     {
-        // Change color to red for a brief moment to indicate damage taken
         this.currentColor = new Vector4(1, 0, 0, currentColor.w);
         this.model.color = this.currentColor;
         yield return new WaitForSeconds(0.2f);
         this.currentColor = new Vector4(1, 1, 1, currentColor.w);
         this.model.color = this.currentColor;
-
     }
 }

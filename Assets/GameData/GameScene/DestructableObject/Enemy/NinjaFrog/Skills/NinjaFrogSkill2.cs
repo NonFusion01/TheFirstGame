@@ -49,7 +49,7 @@ public class NinjaFrogSkill2 : CoreMonoBehaviour
         this.ninjaFrogCtrl.model.color = this.ninjaFrogCtrl.currentColor;
         yield return new WaitForSeconds(1f);
         // Follow target position
-        this.ninjaFrogCtrl.transform.position = new Vector2(this.ninjaFrogCtrl.target.position.x, this.ninjaFrogCtrl.target.position.y + 3);
+        this.ninjaFrogCtrl.transform.position = new Vector2(this.ninjaFrogCtrl.target.position.x, this.ninjaFrogCtrl.target.position.y + 2.5f);
         // Appear on scene
         this.SpawnSmokeFX();
         yield return new WaitForSeconds(0.05f);

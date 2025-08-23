@@ -58,12 +58,13 @@ public class TriggerZone1 : TriggerZoneCtrl
 
     protected IEnumerator TriggerZoneAction()
     {
-        this.moveCam.cameraMoving.startPoint.position = this.moveCam.cameraMoving.mainCamera.transform.position;
+        this.moveCam.cameraMoving.startPoint.position = this.moveCam.cameraMoving.cinemachineCamera.transform.position;
         this.moveCam.cameraMoving.stopPoint.position = this.moveCam.camStopPoint.position;
         this.moveCam.CameraMove(2f);
         this.moveGates.GateMove();
         this.spawnBoss.BossSpawn();
         yield return new WaitUntil(() => !this.moveCam.cameraMoving.IsChangingLocation);
+        this.moveCam.cameraMoving.ChangeCameraConfiner(1);
         this.moveCam.cameraMoving.Player.GetComponent<CharController>().isDisableController = false;
         this.moveCam.LockCamInXAxis();
     }

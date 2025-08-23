@@ -67,7 +67,6 @@ public class CharSkillSelection: CoreMonoBehaviour
         {
             if (this.charCtrl.charAttack.isAttacking) return;
             if (this.charCtrl.charTakeDamage.isTakingDmg) return;
-            //this.skillList[index].CastSkill();
             if (this.skillList[2].isInSkillDuration) this.skillList[2].CancelSkill();
             else this.skillList[index].CastSkill();
         }

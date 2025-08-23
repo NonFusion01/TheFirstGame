@@ -49,7 +49,7 @@ public class TriggerZone2 : TriggerZoneCtrl
     {
         // Move cam to stop point
         CharManager.Instance._charStats.inInvincibleState = true;
-        this.moveCam.cameraMoving.startPoint.position = this.moveCam.cameraMoving.mainCamera.transform.position;
+        this.moveCam.cameraMoving.startPoint.position = this.moveCam.cameraMoving.cinemachineCamera.transform.position;
         this.moveCam.cameraMoving.stopPoint.position = this.moveCam.camStopPoint.position;
         this.moveCam.CameraMove(2f);
         yield return new WaitUntil(() => !this.moveCam.cameraMoving.IsChangingLocation);
@@ -62,7 +62,7 @@ public class TriggerZone2 : TriggerZoneCtrl
         Debug.Log("All Gates moved");
 
         // Move cam back
-        this.moveCam.cameraMoving.startPoint.position = this.moveCam.cameraMoving.mainCamera.transform.position;
+        this.moveCam.cameraMoving.startPoint.position = this.moveCam.cameraMoving.cinemachineCamera.transform.position;
         this.moveCam.cameraMoving.stopPoint.position = new Vector3(this.player.position.x, this.player.position.y, -10);
         this.moveCam.CameraMove(2f);
         Debug.Log("Move Back");
